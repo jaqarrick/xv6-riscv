@@ -48,6 +48,7 @@ start()
   asm volatile("mret");
 }
 
+// MBUDAYR - timer interrupts
 // ask each hart to generate timer interrupts.
 void
 timerinit()
@@ -61,6 +62,7 @@ timerinit()
   // allow supervisor to use stimecmp and time.
   w_mcounteren(r_mcounteren() | 2);
   
+  // MBUDAYR - configure time via r_time() ? 
   // ask for the very first timer interrupt.
   w_stimecmp(r_time() + 1000000);
 }

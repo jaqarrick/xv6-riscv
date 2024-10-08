@@ -184,6 +184,7 @@ r_stimecmp()
   return x;
 }
 
+// MBUDAYR - TIMER INTERRUPT?
 static inline void 
 w_stimecmp(uint64 x)
 {

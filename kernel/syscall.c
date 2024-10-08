@@ -91,6 +91,7 @@ extern uint64 sys_fstat(void);
 extern uint64 sys_chdir(void);
 extern uint64 sys_dup(void);
 extern uint64 sys_getpid(void);
+extern uint64 sys_getpid2(void);
 extern uint64 sys_sbrk(void);
 extern uint64 sys_sleep(void);
 extern uint64 sys_uptime(void);
@@ -126,6 +127,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_getpid2] sys_getpid2,
 };
 
 void

@@ -7,6 +7,7 @@
 volatile static int started = 0;
 
 // start() jumps here in supervisor mode on all CPUs.
+// MBUDAYR - this initializes the whole fuckin OS.
 void
 main()
 {
@@ -19,6 +20,10 @@ main()
     kinit();         // physical page allocator
     kvminit();       // create kernel page table
     kvminithart();   // turn on paging
+    // MBUDAYR - procinit does something 64 times in a loop because
+    // there are only 64 processes allowed. What it does exactly is still
+    // unknown.
+    // This block only runs once.
     procinit();      // process table
     trapinit();      // trap vectors
     trapinithart();  // install kernel trap vector

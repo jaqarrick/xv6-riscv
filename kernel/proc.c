@@ -53,6 +53,9 @@ procinit(void)
   initlock(&wait_lock, "wait_lock");
   for(p = proc; p < &proc[NPROC]; p++) {
       initlock(&p->lock, "proc");
+      // MBUDAYR - what functions check p->state 
+      // to see if the process is UNUSED? What other
+      // state can a process be in?
       p->state = UNUSED;
       p->kstack = KSTACK((int) (p - proc));
   }
@@ -436,10 +439,14 @@ wait(uint64 addr)
 
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
+// MBUDAYR - since there are 2 CPUs (I think), this should be called
+// twice. Is there a way to validate that?
 // Scheduler never returns.  It loops, doing:
 //  - choose a process to run.
 //  - swtch to start running that process.
-//  - eventually that process transfers control
+// MBUDAYR - what mechanism does the hardware use to transfer control? Is it a timer? 
+//  - eventually that process transfers control.
+// MBUDAYR - is there a `swtch` function defined in assembly AND a `swtch` function defined in the kernel?
 //    via swtch back to the scheduler.
 void
 scheduler(void)
@@ -463,6 +470,8 @@ scheduler(void)
         // before jumping back to us.
         p->state = RUNNING;
         c->proc = p;
+       // MBUDAYR - how does the process stop running? Does the process run until it is done?
+       // Are there timer interrupts?
         swtch(&c->context, &p->context);
 
         // Process is done running for now.
@@ -491,7 +500,13 @@ void
 sched(void)
 {
   int intena;
+  // myproc() returns cpu -> proc
   struct proc *p = myproc();
+  // INVARIANTS:
+  // 1. process on the CPU should be locked
+  // 2. nesting level on the CPU should equal 1
+  // 3. the process CANNOT be running
+  // 4. devices/scheduler CANNOT be interruptible
 
   if(!holding(&p->lock))
     panic("sched p->lock");
