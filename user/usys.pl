@@ -37,3 +37,4 @@ entry("getpid2");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
+entry("scount");
